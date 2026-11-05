@@ -1,29 +1,48 @@
-# Publica la app gratis en GitHub Pages cada vez que subes cambios a "main".
+# Publica la web gratis en GitHub Pages cada vez que se suben cambios a "main".
+# Dos trabajos separados: si la publicación falla, «Re-run failed jobs» repite solo
+# «Publicar» y reutiliza lo ya construido (sin generar dos paquetes "github-pages").
 name: Publicar en GitHub Pages
+
 on:
   push:
     branches: [main]
   workflow_dispatch:
+
 permissions:
   contents: read
   pages: write
   id-token: write
+
+# Una sola publicación a la vez; si llega otra, la en curso termina antes
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
 jobs:
-  deploy:
+  build:
+    name: Construir
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+          cache: npm
       - run: npm ci
       - run: npm test # no publica si la prueba falla
       - run: npm run build
+      - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist
+
+  deploy:
+    name: Publicar
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
       - id: deployment
         uses: actions/deploy-pages@v4
