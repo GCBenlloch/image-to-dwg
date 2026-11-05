@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#e24d33" />
+    <meta name="author" content="Gonzalo Cañada" />
+    <meta name="description" content="Saca el contorno de logos, escudos e imágenes sencillas (JPG, PNG, WEBP) y guárdalo como DWG, DXF o SVG. Gratis y sin subir tus imágenes a ningún sitio." />
+    <title>Imagen a DWG, DXF y SVG · contorno de imágenes para CAD</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%23e24d33'/><path d='M9 23 L16 9 L23 23 Z' fill='none' stroke='white' stroke-width='2.6' stroke-linejoin='round'/></svg>" />
+  </head>
+  <body>
+    <div class="topbar" aria-hidden="true"></div>
+
+    <header class="hero">
+      <h1 aria-label="Imagen a DWG, DXF o SVG">
+        <span aria-hidden="true">Imagen</span> <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h16" /><path d="m13 5 7 7-7 7" /></svg>
+        <span class="roller" aria-hidden="true"><span class="roller-track"><span>DWG</span><span>DXF</span><span>SVG</span><span>DWG</span></span></span>
+      </h1>
+      <p>Saca el contorno de logos, escudos e imágenes sencillas y guárdalo como dibujo CAD o SVG.</p>
+
+      <nav class="steps" role="tablist" aria-label="Pasos">
+        <button role="tab" data-step="1" aria-controls="view1"><span>1</span>Sube la imagen</button>
+        <button role="tab" data-step="2" aria-controls="view2" disabled title="Primero sube una imagen"><span>2</span>Revisa el trazado</button>
+        <button role="tab" data-step="3" aria-controls="view3" disabled title="Primero sube una imagen"><span>3</span>Descarga</button>
+      </nav>
+    </header>
+
+    <main>
+      <!-- Paso 1: subir -->
+      <section id="view1" role="tabpanel" class="view-step">
+        <label id="drop" class="drop" tabindex="0">
+          <input id="file" type="file" accept="image/png,image/jpeg,image/webp" hidden />
+          <span class="drop-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4" /><path d="m7 9 5-5 5 5" /><path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" /></svg>
+          </span>
+          <strong>Arrastra aquí tu imagen</strong>
+          <span class="drop-hint">o <u>haz clic para elegirla</u> · también puedes pegarla con Ctrl+V</span>
+          <span class="formats">JPG · PNG · WEBP</span>
+        </label>
+        <div class="actions" id="keepCurrent" hidden>
+          <button class="btn secondary" data-goto="2"><span>Seguir con «<span id="currentName"></span>»</span> <svg class="icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14" /><path d="m13 6 6 6-6 6" /></svg></button>
+        </div>
+      </section>
+
+      <!-- Paso 2: revisar -->
+      <section id="view2" role="tabpanel" class="view-step" hidden>
+        <div class="panels">
+          <figure class="panel">
+            <figcaption>Original</figcaption>
+            <div class="view checker"><img id="original" alt="Imagen original" /></div>
+          </figure>
+          <figure class="panel">
+            <figcaption>
+              Trazado
+              <label class="toggle"><input id="showImage" type="checkbox" checked /><span>Ver imagen debajo</span></label>
+            </figcaption>
+            <div class="view" id="previewWrap">
+              <div id="preview" class="svg-box"></div>
+              <div class="spinner" role="status" aria-label="Procesando"></div>
+            </div>
+          </figure>
+        </div>
+
+        <div class="toolbar">
+          <div class="field grow">
+            <label for="detail">Detalle <output id="detailVal"></output></label>
+            <input id="detail" type="range" min="1" max="10" value="6" />
+            <div class="range-ends"><span>Más suave</span><span>Más fiel</span></div>
+          </div>
+          <div id="stats" class="stats" aria-live="polite"></div>
+        </div>
+
+        <div class="actions split">
+          <button class="btn secondary" data-goto="1">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5" /><path d="m11 6-6 6 6 6" /></svg>
+            Usar otra imagen
+          </button>
+          <button class="btn primary" data-goto="3" id="toDownload">
+            Continuar a la descarga
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14" /><path d="m13 6 6 6-6 6" /></svg>
+          </button>
+        </div>
+      </section>
+
+      <!-- Paso 3: descargar -->
+      <section id="view3" role="tabpanel" class="view-step" hidden>
+        <div class="download-card">
+          <div class="final">
+            <div class="seg" role="radiogroup" aria-label="Vista previa">
+              <button role="radio" aria-checked="true" data-mode="outline">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 20 8v8l-8 5-8-5V8z" /></svg>
+                Contorno
+              </button>
+              <button role="radio" aria-checked="false" data-mode="fill">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 20 8v8l-8 5-8-5V8z" /></svg>
+                Relleno
+              </button>
+            </div>
+            <div id="finalPreview" class="svg-box"></div>
+          </div>
+          <div class="download-side">
+            <h2 id="fileTitle">dibujo</h2>
+            <p class="muted" id="fileDesc">Una capa «Contorno» con polilíneas</p>
+
+            <div class="field">
+              <label for="width">Ancho final</label>
+              <div class="suffix"><input id="width" type="number" min="1" step="any" value="100" /><span>mm</span></div>
+              <small class="muted" id="sizeInfo"></small>
+            </div>
+
+            <div class="download-buttons">
+              <button id="downloadDwg" class="btn primary">
+                <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v12" /><path d="m7 11 5 5 5-5" /><path d="M5 20h14" /></svg>
+                Descargar DWG
+              </button>
+              <p class="btn-hint">Formato AutoCAD 2000 · el recomendado para CAD</p>
+
+              <p class="group-label">Otros formatos</p>
+              <div class="secondary-row">
+                <button id="downloadDxf" class="btn format-alt">
+                  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v12" /><path d="m7 11 5 5 5-5" /><path d="M5 20h14" /></svg>
+                  <span class="btn-text"><span class="btn-label">DXF</span><span class="btn-sub">Otros programas CAD</span></span>
+                </button>
+                <button id="downloadSvg" class="btn format-alt">
+                  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v12" /><path d="m7 11 5 5 5-5" /><path d="M5 20h14" /></svg>
+                  <span class="btn-text"><span class="btn-label">SVG</span><span class="btn-sub">Diseño y corte láser</span></span>
+                </button>
+              </div>
+            </div>
+            <p id="downloaded" class="downloaded" role="status" hidden></p>
+
+            <button class="btn link back" data-goto="2"><svg class="icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5" /><path d="m11 6-6 6 6 6" /></svg> Volver a ajustar el trazado</button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <span class="foot-item">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2" /><path d="M8 11V7a4 4 0 0 1 8 0v4" /></svg>
+        Tus imágenes no salen de tu ordenador
+      </span>
+      <span class="foot-sep" aria-hidden="true">·</span>
+      <span class="foot-item">Creado por <strong>Gonzalo Cañada</strong></span>
+      <span class="foot-sep" aria-hidden="true">·</span>
+      <a class="foot-item foot-link" href="https://github.com/GCBenlloch/image-to-dwg" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.52-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.8 1.19 1.83 1.19 3.09 0 4.42-2.69 5.39-5.26 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5Z" /></svg>
+        Código en GitHub
+      </a>
+    </footer>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

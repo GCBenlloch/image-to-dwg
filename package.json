@@ -1,0 +1,42 @@
+{
+  "name": "image-to-dwg",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Saca el contorno de logos, escudos e imágenes sencillas y lo guarda como DWG, DXF o SVG. Todo en el navegador.",
+  "author": "Gonzalo Cañada",
+  "license": "AGPL-3.0-or-later",
+  "homepage": "https://gcbenlloch.github.io/image-to-dwg/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GCBenlloch/image-to-dwg.git"
+  },
+  "bugs": {
+    "url": "https://github.com/GCBenlloch/image-to-dwg/issues"
+  },
+  "keywords": [
+    "dwg",
+    "dxf",
+    "svg",
+    "cad",
+    "autocad",
+    "vectorizar",
+    "contorno",
+    "trazado"
+  ],
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "test": "rolldown scripts/e2e.ts --platform node --format esm -o scripts/e2e.bundle.mjs && node scripts/e2e.bundle.mjs && node scripts/verify.mjs scripts/e2e.dwg && node scripts/verify.mjs scripts/e2e_fill.dwg"
+  },
+  "dependencies": {
+    "@fontsource/open-sans": "^5.3.0",
+    "@node-projects/acad-ts": "^3.7.0"
+  },
+  "devDependencies": {
+    "@mlightcad/libredwg-web": "^0.8.4",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.6"
+  }
+}

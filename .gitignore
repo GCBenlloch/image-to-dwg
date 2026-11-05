@@ -1,0 +1,16 @@
+# Dependencias y compilación
+node_modules
+dist
+
+# Archivos temporales de los tests
+scripts/*.dwg
+scripts/*.dxf
+scripts/*.rgba
+scripts/*.bundle.mjs
+
+# Configuración local del editor / asistente
+.claude/
+.vscode/
+*.log
+.DS_Store
+Thumbs.db
